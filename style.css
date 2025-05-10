@@ -1,0 +1,48 @@
+.white {
+    background-color: burlywood;
+}
+
+.black {
+    background-color: #4d3737;
+}
+
+.black,
+.white {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#chessBoard {
+    width: 800px;
+    height: 800px;
+    aspect-ratio: 1/1;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+}
+
+.figure-sizing {
+    margin: 0px;
+}
+
+.chess-piece-white {
+    color: white;
+}
+.chess-piece-black {
+    color: black;
+}
+
+.clickedFigure {
+    &.chess-piece-white {
+        color: #a5a1a1;
+        
+    }
+    &.chess-piece-black {
+        color: #222020;
+    }
+}
+
+.selectedField {
+    background-color: lightgray;
+}
