@@ -44,7 +44,7 @@ $(document).ready(function () {
     function placePiece(piece, positionID, color) {
         let squarePosition = $("#" + positionID);
         let iconPiece = $(document.createElement("i"));
-        iconPiece.addClass(` piece-${piece} fa-${color} fa-lemon fa-4x`);
+        iconPiece.addClass(`piece piece-${piece} fa-${color} fa-lemon fa-4x`);
         iconPiece.attr("id", `piece-${positionID}`);
         squarePosition.append(iconPiece);
     }
@@ -90,5 +90,33 @@ $(document).ready(function () {
 
     // Startposition ausführen
     startingPosition();
+
+    //Figuren Bewegen
+    let selectedPiece = undefined;
+    let selectedColor = undefined;
+
+    function movePiece() {
+        $("square").on("click", function (event) {
+            let piece = $(this).find(".piece").first()
+            let hasPiece = $(this).has(".piece").length > 0;
+            let blackPiece = $(this).classList.contains("piece-solid").length > 0;
+            let whitePiece = $(this).classList.contains("piece-regular").length > 0;
+            let color = blackPiece ? "black" : (whitePiece ? "white" : undefined)
+
+            if (hasPiece) {
+            //$(".piece").addClass("clickedFigure")
+                if (selectedPiece === undefined) {
+                    // destination was clicked
+                    selectedPiece = piece
+                    selectedColor = color
+                    $(this).addClass("selectedField")
+                }
+            }
+        })
+    }
+
+    //Click erkennen / Figur erfassen (X)
+    //Figur clas selected (X)
+    //next click destination
 });
 
