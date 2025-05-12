@@ -92,32 +92,7 @@ $(document).ready(function () {
     let selectedPiece = undefined;
     let selectedColor = undefined;
 
-    function pieceInteraction() {
-        $(".square").on("click", function () {
-            let piece = $(this).find(".piece").first();
-            let hasPiece = piece.length > 0;
-            let blackPiece = $(this).find(".piece-solid").length > 0;
-            let whitePiece = $(this).find(".piece-regular").length > 0;
-            let color = blackPiece ? "black" : (whitePiece ? "white" : undefined);
 
-            if (hasPiece) {
-                // Piece gets selected
-                if (selectedPiece === undefined) {
-                    selectedPiece = piece;
-                    selectedColor = color;
-                    $(this).addClass("selectedSquare");
-                }
-            } else {
-                // Destination is clicked
-                if (selectedPiece !== undefined) {
-                    $(selectedPiece).parent().removeClass("selectedSquare");
-                    $(this).append(selectedPiece);
-                    selectedPiece = undefined;
-                    selectedColor = undefined;
-                }
-            }
-        });
-    }
 
 
     //Click erkennen / Figur erfassen (X)
