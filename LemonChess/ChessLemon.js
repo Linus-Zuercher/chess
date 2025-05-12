@@ -19,7 +19,7 @@ $(document).ready(function () {
             square.classList.add("square");
 
             let dark = (row + col) % 2 === 1;
-            square.style.backgroundColor = dark ? "#769656" : "#eeeed2";
+            square.style.backgroundColor = dark ? "#4d3737" : "burlywood";
             square.id = squareName;
             square.dataset.row = row;
             square.dataset.col = col;
@@ -40,7 +40,7 @@ $(document).ready(function () {
         }
     }
 
-    // Pice placement
+    // Piece placement
     function placePiece(piece, positionID, color) {
         let squarePosition = $("#" + positionID);
         let iconPiece = $(document.createElement("i"));
@@ -88,35 +88,45 @@ $(document).ready(function () {
         placePiece("pawn", "h7", "solid");
     }
 
-    // Startposition ausführen
-    startingPosition();
-
     //Figuren Bewegen
     let selectedPiece = undefined;
     let selectedColor = undefined;
 
-    function movePiece() {
-        $("square").on("click", function (event) {
-            let piece = $(this).find(".piece").first()
-            let hasPiece = $(this).has(".piece").length > 0;
-            let blackPiece = $(this).classList.contains("piece-solid").length > 0;
-            let whitePiece = $(this).classList.contains("piece-regular").length > 0;
-            let color = blackPiece ? "black" : (whitePiece ? "white" : undefined)
+    function pieceInteraction() {
+        $(".square").on("click", function () {
+            let piece = $(this).find(".piece").first();
+            let hasPiece = piece.length > 0;
+            let blackPiece = $(this).find(".piece-solid").length > 0;
+            let whitePiece = $(this).find(".piece-regular").length > 0;
+            let color = blackPiece ? "black" : (whitePiece ? "white" : undefined);
 
             if (hasPiece) {
-            //$(".piece").addClass("clickedFigure")
+                // Piece gets selected
                 if (selectedPiece === undefined) {
-                    // destination was clicked
-                    selectedPiece = piece
-                    selectedColor = color
-                    $(this).addClass("selectedField")
+                    selectedPiece = piece;
+                    selectedColor = color;
+                    $(this).addClass("selectedSquare");
+                }
+            } else {
+                // Destination is clicked
+                if (selectedPiece !== undefined) {
+                    $(selectedPiece).parent().removeClass("selectedSquare");
+                    $(this).append(selectedPiece);
+                    selectedPiece = undefined;
+                    selectedColor = undefined;
                 }
             }
-        })
+        });
     }
+
 
     //Click erkennen / Figur erfassen (X)
     //Figur clas selected (X)
     //next click destination
+    function startGame() {
+        pieceInteraction();
+        startingPosition();
+    }
+    startGame();
 });
 
