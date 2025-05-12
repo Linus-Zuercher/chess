@@ -120,7 +120,7 @@ $(document).ready(function () {
     }
 
 
-    //Click erkennen / Figur erfassen (X)
+        //Click erkennen / Figur erfassen (X)
     //Figur clas selected (X)
     //next click destination
     function startGame() {
