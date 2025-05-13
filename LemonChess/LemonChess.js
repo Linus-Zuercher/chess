@@ -1,4 +1,3 @@
-
 $(document).ready(function () {
     // Variablen
     let board = []
@@ -88,7 +87,7 @@ $(document).ready(function () {
         placePiece("pawn", "h7", "solid");
     }
 
-    //Figuren Bewegen
+    // Figuren Bewegen
     let selectedPiece = undefined;
     let selectedColor = undefined;
 
@@ -106,29 +105,29 @@ $(document).ready(function () {
                     selectedPiece = piece;
                     selectedColor = color;
                     $(this).addClass("selectedSquare");
+                } else if (piece.is(selectedPiece)) {
+                    // same piece clicked (deselect)
+                    $(this).removeClass("selectedSquare");
+                    selectedPiece = undefined;
+                    selectedColor = undefined;
                 } else if (selectedColor === color) {
-                    // piece of same color clicked (piece selected)
+                    // piece of same color clicked (select new piece)
                     $(selectedPiece.parent()).removeClass("selectedSquare");
                     $(this).addClass("selectedSquare");
                     selectedPiece = piece;
-                } else if (selectedColor !== color) {
+                } else {
                     // piece of other color, gets eaten
+                    $(this).empty(); // Remove the opponent's piece
+                    $(this).append(selectedPiece); // Move the selected piece to the target
                     $(selectedPiece.parent()).removeClass("selectedSquare");
-                    $(this).empty();
-                    $(this).append(selectedPiece);
-                    selectedPiece = undefined;
-                    selectedColor = undefined;
-                } else if (piece.is(selectedPiece)) {
-                    // same piece clicked
-                    $(this).removeClass("selectedSquare");
                     selectedPiece = undefined;
                     selectedColor = undefined;
                 }
             } else {
                 // Destination is clicked
                 if (selectedPiece !== undefined) {
-                    $(selectedPiece).parent().removeClass("selectedSquare");
-                    $(this).append(selectedPiece);
+                    $(selectedPiece.parent()).removeClass("selectedSquare");
+                    $(this).append(selectedPiece); // Move the piece
                     selectedPiece = undefined;
                     selectedColor = undefined;
                 }
@@ -136,14 +135,9 @@ $(document).ready(function () {
         });
     }
 
-
-        //Click erkennen / Figur erfassen (X)
-    //Figur clas selected (X)
-    //next click destination
     function startGame() {
         pieceInteraction();
         startingPosition();
     }
     startGame();
 });
-
