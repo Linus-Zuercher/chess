@@ -106,6 +106,23 @@ $(document).ready(function () {
                     selectedPiece = piece;
                     selectedColor = color;
                     $(this).addClass("selectedSquare");
+                } else if (selectedColor === color) {
+                    // piece of same color clicked (piece selected)
+                    $(selectedPiece.parent()).removeClass("selectedSquare");
+                    $(this).addClass("selectedSquare");
+                    selectedPiece = piece;
+                } else if (selectedColor !== color) {
+                    // piece of other color, gets eaten
+                    $(selectedPiece.parent()).removeClass("selectedSquare");
+                    $(this).empty();
+                    $(this).append(selectedPiece);
+                    selectedPiece = undefined;
+                    selectedColor = undefined;
+                } else if (piece.is(selectedPiece)) {
+                    // same piece clicked
+                    $(this).removeClass("selectedSquare");
+                    selectedPiece = undefined;
+                    selectedColor = undefined;
                 }
             } else {
                 // Destination is clicked
