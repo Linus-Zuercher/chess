@@ -101,6 +101,7 @@ $(document).ready(function () {
 
             if (hasPiece) {
                 // Piece gets selected
+
                 if (selectedPiece === undefined) {
                     selectedPiece = piece;
                     selectedColor = color;
@@ -117,9 +118,10 @@ $(document).ready(function () {
                     selectedPiece = piece;
                 } else {
                     // piece of other color, gets eaten
+                    $(selectedPiece.parent()).removeClass("selectedSquare");
                     $(this).empty(); // Remove the opponent's piece
                     $(this).append(selectedPiece); // Move the selected piece to the target
-                    $(selectedPiece.parent()).removeClass("selectedSquare");
+                    $(this).parent().removeClass("selectedSquare");
                     selectedPiece = undefined;
                     selectedColor = undefined;
                 }
