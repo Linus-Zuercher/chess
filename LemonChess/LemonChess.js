@@ -117,13 +117,15 @@ $(document).ready(function () {
                     $(this).addClass("selectedSquare");
                     selectedPiece = piece;
                 } else {
-                    // piece of other color, gets eaten
-                    $(selectedPiece.parent()).removeClass("selectedSquare");
-                    $(this).empty(); // Remove the opponent's piece
-                    $(this).append(selectedPiece); // Move the selected piece to the target
-                    $(this).parent().removeClass("selectedSquare");
+                    // Piece already selected but of the other color, we eat the piece
+                    $(selectedPiece.parent()).removeClass("selectedSquare")
+                    $(this).empty()
+                    $(this).append(selectedPiece)
+                    $(this).parent().removeClass("selectedSquare")
                     selectedPiece = undefined;
                     selectedColor = undefined;
+                    // $(selectedPiece).removeClass("clickedFigure")
+
                 }
             } else {
                 // Destination is clicked
