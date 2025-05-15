@@ -13,6 +13,14 @@
     align-items: center;
 }
 
+.dark-square {
+    background-color: #4d3737;
+}
+
+.light-square {
+    background-color: burlywood;
+}
+
 .selectedSquare {
-    background-color: lightgray;
+    background-color: lightgray !important;
 }
