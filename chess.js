@@ -19,6 +19,32 @@ function drawChessBoard() {
   }
 }
 
+function algebraicToCoords(square) {
+  let files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+  let file = square[0];           // e.g. "a"
+  let rank = parseInt(square[1]); // e.g. "1" → 1
+
+  let col = files.indexOf(file);  // "a" → 0, "b" → 1, etc.
+  let row = 8 - rank;             // "1" → 7, "8" → 0 (top-down)
+
+  return [row, col];              // [row, col]
+}
+
+
+let chessBoardArray = [
+  ["a8", "b8", "c8", "d8", "e8", "f8", "g8", "h8"],
+  ["a7", "b7", "c7", "d7", "e7", "f7", "g7", "h7"],
+  ["a6", "b6", "c6", "d6", "e6", "f6", "g6", "h6"],
+  ["a5", "b5", "c5", "d5", "e5", "f5", "g5", "h5"],
+  ["a4", "b4", "c4", "d4", "e4", "f4", "g4", "h4"],
+  ["a3", "b3", "c3", "d3", "e3", "f3", "g3", "h3"],
+  ["a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2"],
+  ["a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1"]
+];
+
+
+
+
 function placePiece(piece, positionId, color) {
   let positionField = $("#" + positionId);
   let figure = $(document.createElement("i"));
@@ -27,8 +53,12 @@ function placePiece(piece, positionId, color) {
   $(figure).addClass(`chess-piece-${color}`)
   $(figure).attr("id", `figure-${positionId}`)
   positionField.append(figure);
-}
 
+
+  let coords = algebraicToCoords(positionId);
+  chessBoardArray[coords[0]][coords[1]] = piece;
+}
+console.log(chessBoardArray);
 function figureSizing(denominator) {
   let chessBoardWidth = parseFloat($("#chessBoard").css("width"));
   let relativeFigureSize = chessBoardWidth / denominator;
@@ -82,9 +112,18 @@ function removePiece(piece, positionId) {
   $(`#${positionId} i.fa-chess-${piece}`).remove();
 }
 
+function changeChessBoardArray(origin, destination) {
+  chessBoardArray[arrayOrigin[0]][arrayOrigin[1]] =
+}
+
 let selectedPiece = undefined;
 let selectedColor = undefined;
-
+let origin = undefined;
+let destination = undefined;
+let arrayOrigin = undefined;
+let arrayDestination = undefined;
+let originalSelectedPiece = undefined;
+let currentSelectedPiece = undefined;
 
 
 function clickHandler() {
@@ -140,10 +179,17 @@ function clickHandler() {
     } else {
       // Clicked on an empty field and a piece is already selected
       if (selectedPiece !== undefined) {
+        origin = $(selectedPiece.parent().attr("id"));
+        originalSelectedPiece = selectedPiece;
         $(selectedPiece.parent()).removeClass("selectedField")
         $(this).append(selectedPiece);
+        destination = $(this.attr("id"));
         selectedPiece = undefined;
         selectedColor = undefined;
+        arrayOrigin = algebraicToCoords(origin);
+        arrayDestination = algebraicToCoords(destination);
+        currentSelectedPiece = selectedPiece
+
         
       } 
       // if (selectedPiece === undefined) {
@@ -153,13 +199,22 @@ function clickHandler() {
     console.log("*************** AFTER ************")
     console.log("selectedPiece", selectedPiece)
     console.log("selectedColor", selectedColor)
+
+
   })
 }
 
-function nextMove(pieceType) {
-  
+function updateArray(origin, destination) {
 
 }
+
+
+function nextMove(figureId) {
+  if (figureId === "figure-a1") {
+  }
+
+}
+
 
 
 

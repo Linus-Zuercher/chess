@@ -46,3 +46,26 @@
 .selectedField {
     background-color: lightgray;
 }
+
+#logoTitle {
+ margin-left: 10px;
+    margin-right: 10px;
+    grid-column-start: 2;
+    grid-row-start: 1;
+}
+#logoContainer {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr 2fr;
+}
+#slogan {
+    grid-column-start: 2;
+    grid-row-start: 2;
+}
+#logoPicture {
+    grid-column-start: 1;
+    grid-row-start: 1;
+    grid-row-end: 3;
+    font-size: 400%;
+    margin: 0px;
+}
