@@ -17,8 +17,6 @@ $(document).ready(function () {
             let square = document.createElement("div");
             square.classList.add("square");
 
-            let dark = (row + col) % 2 === 1;
-            square.classList.add("square");
             square.classList.add((row + col) % 2 === 1 ? "dark-square" : "light-square");
             square.id = squareName;
             square.dataset.row = row;
@@ -40,25 +38,114 @@ $(document).ready(function () {
         }
     }
 
-    // Piece placement
+
+    // Piece placement mit eigener Klasse je Figur
     function placePiece(piece, positionID, color) {
         let squarePosition = $("#" + positionID);
         let iconPiece = $(document.createElement("i"));
 
-        // FontAwesome-Klasse bestimmen
         let faColorClass = color === "regular" ? "fa-regular" : "fa-solid";
-
-        // Farbklasse für die Logik (damit .hasClass später funktioniert!)
         let logicColorClass = color === "regular" ? "piece-regular" : "piece-solid";
 
-        iconPiece.addClass(`piece ${logicColorClass} ${faColorClass} fa-lemon fa-4x`);
+        iconPiece.addClass(`piece ${logicColorClass} ${faColorClass} fa-lemon fa-4x piece-${piece}`);
         iconPiece.attr("id", `piece-${positionID}`);
+        iconPiece.attr("data-piece", piece);
+
         squarePosition.append(iconPiece);
     }
 
+
+    // Hilfsfunktion: Feldnamen in Koordinaten umwandeln
+    function algebraicToCoords(square) {
+        let files = ['a','b','c','d','e','f','g','h'];
+        let file = square[0];
+        let rank = parseInt(square[1]);
+        let row = 8 - rank;
+        let col = files.indexOf(file);
+        return [row, col];
+    }
+
+    //KI not me
+    // Zugvalidierung je Figur (vereinfacht)
+    //KI not me
+// Zugvalidierung je Figur (vereinfacht)
+    function isValidMove(piece, origin, destination, color) {
+        let [or, oc] = algebraicToCoords(origin);
+        let [dr, dc] = algebraicToCoords(destination);
+        let rowDiff = dr - or;
+        let colDiff = dc - oc;
+
+        switch(piece) {
+            case "pawn":
+                let forward = (color === "white") ? -1 : 1;
+                let destinationSquare = $("#" + destination);
+                let hasEnemyPiece = destinationSquare.find(".piece").length > 0 &&
+                    ((color === "white" && destinationSquare.find(".piece-solid").length > 0) ||
+                        (color === "black" && destinationSquare.find(".piece-regular").length > 0));
+
+                // Vorwärts bewegen (1 Feld)
+                if (colDiff === 0 && rowDiff === forward && !hasEnemyPiece) return true;
+
+                // Vorwärts 2 Felder beim Start
+                if (colDiff === 0 && rowDiff === 2*forward &&
+                    ((color === "white" && or === 6) || (color === "black" && or === 1)) &&
+                    !hasEnemyPiece) return true;
+
+                // Seitwärts diagonal nur schlagen erlaubt
+                if (Math.abs(colDiff) === 1 && rowDiff === forward && hasEnemyPiece) return true;
+
+                return false;
+
+            case "rook":
+                if (rowDiff === 0 && colDiff !== 0) return true;
+                if (colDiff === 0 && rowDiff !== 0) return true;
+                return false;
+
+            case "knight":
+                if ((Math.abs(rowDiff) === 2 && Math.abs(colDiff) === 1) || (Math.abs(rowDiff) === 1 && Math.abs(colDiff) === 2)) return true;
+                return false;
+
+            case "bishop":
+                if (Math.abs(rowDiff) === Math.abs(colDiff)) return true;
+                return false;
+
+            case "queen":
+                if (rowDiff === 0 && colDiff !== 0) return true;
+                if (colDiff === 0 && rowDiff !== 0) return true;
+                if (Math.abs(rowDiff) === Math.abs(colDiff)) return true;
+                return false;
+
+            case "king":
+                if (Math.abs(rowDiff) <= 1 && Math.abs(colDiff) <= 1) return true;
+                return false;
+
+            default:
+                return false;
+        }
+    }
+
+    //KI not me
+    // Spielende prüfen (König verloren)
+    function checkGameOver() {
+        let whiteKing = $(".piece-regular.piece-king").length;
+        let blackKing = $(".piece-solid.piece-king").length;
+
+        if (whiteKing === 0) {
+            alert("Schachmatt! Schwarz gewinnt!");
+            $(".square").off("click");
+            return true;
+        } else if (blackKing === 0) {
+            alert("Schachmatt! Weiß gewinnt!");
+            $(".square").off("click");
+            return true;
+        }
+        return false;
+    }
+
+
     // Starting Position
     function startingPosition() {
-        // White Pices
+        // White Pieces
         placePiece("rook", "a1", "regular");
         placePiece("knight", "b1", "regular");
         placePiece("bishop", "c1", "regular");
@@ -76,7 +163,7 @@ $(document).ready(function () {
         placePiece("pawn", "g2", "regular");
         placePiece("pawn", "h2", "regular");
 
-        // Black Pices
+        // Black Pieces
         placePiece("rook", "a8", "solid");
         placePiece("knight", "b8", "solid");
         placePiece("bishop", "c8", "solid");
@@ -95,7 +182,8 @@ $(document).ready(function () {
         placePiece("pawn", "h7", "solid");
     }
 
-    // Figuren Bewegen
+
+    // Figuren bewegen mit Zugprüfung + Märchenschach-Feature
     let selectedPiece = undefined;
     let selectedColor = undefined;
 
@@ -110,7 +198,6 @@ $(document).ready(function () {
             const color = isBlack ? "black" : isWhite ? "white" : undefined;
 
             if (selectedPiece === undefined) {
-                // Erstmalig eine Figur wählen
                 if (hasPiece) {
                     selectedPiece = pieceOnClicked;
                     selectedColor = color;
@@ -119,42 +206,52 @@ $(document).ready(function () {
                 }
             } else {
                 const originSquare = selectedPiece.parent();
+                const originID = originSquare.attr("id");
+                const destID = clickedSquare.attr("id");
 
                 if (hasPiece) {
                     if (pieceOnClicked[0] === selectedPiece[0]) {
-                        // Gleiche Figur erneut angeklickt – abwählen
                         selectedPiece = undefined;
                         selectedColor = undefined;
                         $(".square").removeClass("selectedSquare");
                     } else if (color === selectedColor) {
-                        // Andere eigene Figur – Auswahl wechseln
                         selectedPiece = pieceOnClicked;
                         selectedColor = color;
                         $(".square").removeClass("selectedSquare");
                         clickedSquare.addClass("selectedSquare");
                     } else {
-                        // Gegnerische Figur – schlagen
-                        pieceOnClicked.remove(); // entferne Gegner
-                        clickedSquare.append(selectedPiece); // ziehe eigene Figur hierher
+                        let pieceType = selectedPiece.data("piece");
+                        if (isValidMove(pieceType, originID, destID, selectedColor)) {
+                            pieceOnClicked.remove();
+                            clickedSquare.append(selectedPiece);
+                        } else {
+                            selectedPiece.remove(); // Märchenschach: falscher Zug löscht Figur
+                        }
                         $(".square").removeClass("selectedSquare");
                         selectedPiece = undefined;
                         selectedColor = undefined;
                     }
                 } else {
-                    // Freies Feld – bewegen
-                    clickedSquare.append(selectedPiece);
+                    let pieceType = selectedPiece.data("piece");
+                    if (isValidMove(pieceType, originID, destID, selectedColor)) {
+                        clickedSquare.append(selectedPiece);
+                    } else {
+                        selectedPiece.remove();
+                    }
                     $(".square").removeClass("selectedSquare");
                     selectedPiece = undefined;
                     selectedColor = undefined;
                 }
+                checkGameOver();
             }
         });
     }
 
 
     function startGame() {
-        pieceInteraction();
         startingPosition();
+        pieceInteraction();
     }
+
     startGame();
 });
