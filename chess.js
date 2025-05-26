@@ -113,7 +113,7 @@ function removePiece(piece, positionId) {
 }
 
 function changeChessBoardArray(origin, destination) {
-  chessBoardArray[arrayOrigin[0]][arrayOrigin[1]] =
+  chessBoardArray[arrayOrigin[0]][arrayOrigin[1]] = "";
 }
 
 let selectedPiece = undefined;
@@ -232,3 +232,5 @@ playGame();
 // piece selected of color x and selecting empty field => move (/)   ok
 // piece selected of color x and selecting another piece of color x => select new piece
 // piece selected of color x and selecting another piece of color y => move already selected piece and remove piece of color y
+
+
