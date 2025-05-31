@@ -43,7 +43,6 @@ let chessBoardArray = [
 ];
 
 
-ello
 
 
 function placePiece(piece, positionId, color) {
